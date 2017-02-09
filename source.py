@@ -1,36 +1,33 @@
+#!/usr/bin/python
+
 import pygame, sys, os,time,string
 from pygame.locals import *
+from texts import list as text_list
 
+# Settings ##################################################
 pygame.init()
-
-#Utworzenie okienka | etykieta | grafika#####################
 display_width=800
 display_height=600
+czcionka = pygame.font.SysFont("georgia", 20) #font
+my_grafic = pygame.image.load('background001.jpg') #main grafic
+pygame.display.set_caption("EncrypterMSG") #Window name
 window = pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption("EncrypterMSG")
-#grafika tla
-my_grafic = pygame.image.load('background001.jpg')
 graf_rect = my_grafic.get_rect(center=(display_width/2, display_height/2))
 #pobranie informacji o ekranie
 screen = pygame.display.get_surface()
-##############################################################
-
-#Pole tekstowe - WELCOME##########################################
-czcionka = pygame.font.SysFont("georgia", 20)
-welcome_text="Pr3daTOR presents..."
-welcome_text2="EncrypterMSG"
-text_rendeer=czcionka.render(welcome_text,1,(250,250,250))
-text_rendeer2=czcionka.render(welcome_text2,1,(250,250,250))
-text_rect = text_rendeer.get_rect(center=(display_width/2, display_height/2+50))
-text_rect2 = text_rendeer2.get_rect(center=(display_width/2, display_height/2+100))
-##################################################################
-
-#Wiecej tekstu###########################################
-text=["Input your nickname: "]
-text_render3=czcionka.render(text[0],1,(250,250,250))
-text_rect3 = text_render3.get_rect(center=(display_width/2, display_height/2-100))
 
 
+##########################################################
+#Function: text_handler
+# get_rect in 3 line get a argv 'center='
+# x,y use to modification this formule:
+# ((display_width/2)+x),((display_height/2)+y)
+# choose all '0' if you want center obj.
+# return tuple (text_rect,text_render)
+def text_handler(text,font,x,y):
+    text_render=font.render(text,1,(250,250,250))
+    text_rect=text_render.get_rect(center=(((display_width/2)+x),((display_height/2)+y)))
+    return (text_rect,text_render)
 #########################################################
 
 #Wypisz kazdy input w terminalu##########################
@@ -84,29 +81,40 @@ def get_key():
       return event.key
     else:
       pass
-
+#############################if main *****
+# welcome flag  ->   startup msg
+# second flag   ->   choose nickname
 welcome=True
 second=True
+
+
+
 while True:
     input(pygame.event.get())
     pygame.display.flip()
 
     if welcome:
         screen.blit(my_grafic, graf_rect)
-        screen.blit(text_rendeer, text_rect)
+        text_rect, text_render = text_handler(text_list[0], czcionka, 0, 50)
+        screen.blit(text_render, text_rect)
         pygame.display.update()
         time.sleep(2)
-        screen.blit(text_rendeer2, text_rect2)
+        text_rect, text_render = text_handler(text_list[1], czcionka, 0, 100)
+        screen.blit(text_render, text_rect)
         pygame.display.update()
         time.sleep(2)
         screen.fill(0)
         welcome=False
     screen.blit(my_grafic, (10, 10))
     if second:
-        screen.blit(text_render3, text_rect3)
+        text_rect,text_render=text_handler(text_list[2],czcionka,0,-100)
+        screen.blit(text_render, text_rect)
         nick= ask(screen,"")
         screen.fill(0)
         screen.blit(my_grafic, (10, 10))
-        nick = czcionka.render("Welcome "+nick, 1, (250, 250, 250))
+        nick_render = czcionka.render("Welcome "+nick, 1, (250, 250, 250))
+        text_rect = text_render.get_rect(center=(((display_width / 2)), ((display_height / 2))))
         second=False
-    screen.blit(nick, text_rect3)
+    screen.blit(nick_render, text_rect)
+    text_rect2, text_render2 = text_handler(text_list[3], czcionka, 0, 200)
+    screen.blit(text_render2, text_rect2)
